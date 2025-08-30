@@ -4,6 +4,7 @@
 #include<iostream>
 #include <vector>
 #include<ctime>
+#include<sstream>
 using namespace std;
 
 // TreeNode Creation
@@ -70,13 +71,13 @@ void heapsort(vector<pair<int, TreeNode*>>& v) {
 
 //HashMap creation
 
-class map{
+class int_map{
     private:
         long long size = 10;
         vector<pair<int,TreeNode*>> m;
         long long currcap = 0;
     public:
-        map(){
+        int_map(){
             m.resize(size);
         }
         void insert(int k, TreeNode* v){
@@ -114,12 +115,12 @@ class map{
 class file{
     public:
     TreeNode* root;
-    map versions;
+    int_map version_map;
     TreeNode* active_version;
     int total_versions = 0;
     file(){
         root = new TreeNode();
-        versions.insert(0,root);
+        version_map.insert(0,root);
         active_version = root;
         total_versions = 1;
     }
@@ -128,3 +129,25 @@ class file{
     }
 };
 #endif
+
+vector<string> process(string command){
+    vector<string> result = {"","",""};
+    int i=0;
+    while(i<command.size() && command[i]!=' '){
+            result[0] += command[i];
+            i++;
+        }
+    while(i<command.size() && command[i]==' '){
+        i++;}
+    while(i<command.size() && command[i]!=' '){
+        result[1] += command[i];
+        i++;
+    }
+    while(i<command.size() && command[i]==' '){
+        i++;}
+    while(i<command.size()){
+        result[2] += command[i];
+        i++;
+    }
+    return result;
+}
