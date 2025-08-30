@@ -4,6 +4,7 @@ using namespace std;
 
 
 int main(){
+    string_map files;
     while(true){
         string command;
         getline(cin,command);
@@ -22,8 +23,12 @@ int main(){
             }
             string filename = inp[1];
             // need to make sure file doesn't already exist
+            if(files.find(filename)){
+                cout<<"File "<<filename<<" already exists"<<endl;
+                continue;
+            }
 
-            //add file to map
+            files.insert(filename);
             cout<<"File "<<filename<<" created"<<endl;
         }
         else if(inp[0]=="READ"){
@@ -35,9 +40,19 @@ int main(){
                 cout<<"Invalid File Name"<<endl;
                 continue;
             }
+
             // need to make sure file exists
 
+            string filename = inp[1];
+            if(!files.find(filename)){
+                cout<<"File "<<filename<<" does not exist"<<endl;
+                continue;
+            }
             //read file from map
+            file* f = files.get(filename);
+            cout<<"File "<<filename<<" content: "<<f->active_version->content<<endl;
+
+            
         }
         else if(inp[0]=="INSERT"){
             if(inp[1]==""){
@@ -48,9 +63,23 @@ int main(){
                 cout<<"Enter the content to be inserted"<<endl;
                 continue;
             }
+
             string content = inp[2];
             string filename = inp[1];
             // need to make sure file exists
+            if(!files.find(filename)){
+                cout<<"File "<<filename<<" does not exist"<<endl;
+                continue;
+            }
+            file* f = files.get(filename);
+            string k =f->active_version->content + content;
+            if(f->active_version->message==""){
+                f->active_version->content = k;
+            }
+            else{
+                f->insert_version(k);
+            }
+            cout<<"Content inserted into file "<<filename<<endl;
             //insert content into file
         }
         else if(inp[0]=="UPDATE"){
@@ -65,7 +94,18 @@ int main(){
             string content = inp[2];
             string filename = inp[1];
             // need to make sure file exists
-            //update content into file
+            if(!files.find(filename)){
+                cout<<"File "<<filename<<" does not exist"<<endl;
+                continue;
+            }
+            file* f = files.get(filename);
+            if(f->active_version->message==""){
+                f->active_version->content = content;
+            }
+            else{
+                f->insert_version(content);
+            }
+            cout<<"File "<<filename<<" updated"<<endl;
         }
         else if(inp[0]=="SNAPSHOT"){
             if(inp[1]==""){
@@ -79,6 +119,20 @@ int main(){
             string filename = inp[1];
             string message = inp[2];
             // need to make sure file exists
+            if(!files.find(filename)){
+                cout<<"File "<<filename<<" does not exist"<<endl;
+                continue;
+            }
+            file* f = files.get(filename);
+            if(f->active_version->message!=""){
+                cout<<"Current version is already snapshotted."<<endl;
+                continue;
+            }
+            else{
+                f->active_version->message = message;
+                f->active_version->snapshot_timestamp = time(0);
+                cout<<"Snapshot created";
+            }
             //take snapshot of file
         }
         else if(inp[0]=="ROLLBACK"){
@@ -87,7 +141,13 @@ int main(){
                 continue;
             }
             if(inp[2]==""){
-                cout<<"Enter the version id"<<endl;
+                file* f = files.get(inp[1]);
+                if(f->active_version == f->root){
+                    cout<<"Already at root version"<<endl;
+                    continue;
+                }
+                f->active_version = f->active_version->parent;
+                cout<<"File "<<inp[1]<<" rolled back to version "<<f->active_version->version<<endl;
                 continue;
             }
             string filename = inp[1];
@@ -103,7 +163,21 @@ int main(){
                 cout<<"Invalid version number"<<endl;
                 continue;
             }
+            
             // need to make sure file exists
+            if(!files.find(filename)){
+                cout<<"File "<<filename<<" does not exist"<<endl;
+                continue;
+            }
+            file* f = files.get(filename);
+            int_map* vm = &f->version_map;
+            if(!vm->find(version)){
+                cout<<"Version "<<version<<" does not exist for file "<<filename<<endl;
+                continue;
+            }
+            TreeNode* v = vm->get(version);
+            f->active_version = v;
+            cout<<"File "<<filename<<" rolled back to version "<<version<<endl;
             //rollback to version
         }
         else if(inp[0]=="HISTORY"){
@@ -116,6 +190,7 @@ int main(){
                 continue;
             }
             string filename = inp[1];
+
             // need to make sure file exists
             //print history of file
         }

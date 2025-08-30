@@ -10,19 +10,97 @@ using namespace std;
 // TreeNode Creation
 
 class TreeNode{
-    private:
+    public:
         int version;
         string content;
-        string message = "";
+        string message ;
         time_t created_timestamp;
         time_t snapshot_timestamp;
         TreeNode* parent;
         vector<TreeNode*> children;
-    public:
+
+    TreeNode(int v , string c, string m, TreeNode* p = NULL){
+        version = v;
+        content = c;
+        message = m;
+        parent = p;
+        created_timestamp = time(0);
+        snapshot_timestamp = 0;
+    }
     ~TreeNode(){
         for(TreeNode* child: children){
             delete child;
         }
+    }
+};
+
+//HashMap creation
+
+class int_map{
+    private:
+        long long size = 10;
+        vector<pair<int,TreeNode*>> m;
+        long long currcap = 0;
+    public:
+        int_map(){
+            m.resize(size);
+        }
+        void insert(int k, TreeNode* v){
+            if(currcap==size){
+            m.resize(2*size);
+            size *= 2;
+            }
+            m[currcap] = {k,v};
+            currcap++;
+        }
+        bool find(int k){
+            if(k<0 || k>=currcap){
+                return false;
+            }
+            if(m[k].second==NULL){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        TreeNode* get(int k){
+            return m[k].second;
+        }
+        void erase(int k){
+            if(k<0 || k>=currcap){
+                return;
+            }
+            m[k].second = NULL;
+        }
+};
+
+
+
+
+// File Structure
+
+class file{
+    public:
+    TreeNode* root;
+    int_map version_map;
+    TreeNode* active_version;
+    int total_versions = 0;
+    file(){
+        root = new TreeNode(0,"","",NULL);
+        version_map.insert(0,root);
+        active_version = root;
+        total_versions = 1;
+    }
+    ~file(){
+        delete root;
+    }
+    void insert_version(string message){
+        TreeNode* newnode = new TreeNode(total_versions,message,"",active_version);
+        active_version->children.push_back(newnode);
+        version_map.insert(total_versions,newnode);
+        active_version = newnode;
+        total_versions++;
     }
 };
 
@@ -39,8 +117,6 @@ class ListNode{
         next = NULL;
     }
     ~ListNode(){
-        delete f;
-        delete next;
     }
 };
 //Heap Functions
@@ -90,46 +166,33 @@ void heapsort(vector<pair<int, TreeNode*>>& v) {
 
 
 
-//HashMap creation
 
-class int_map{
-    private:
-        long long size = 10;
-        vector<pair<int,TreeNode*>> m;
-        long long currcap = 0;
-    public:
-        int_map(){
-            m.resize(size);
+
+
+
+// Input Processing
+
+vector<string> process(string command){
+    vector<string> result = {"","",""};
+    int i=0;
+    while(i<command.size() && command[i]!=' '){
+            result[0] += command[i];
+            i++;
         }
-        void insert(int k, TreeNode* v){
-            if(currcap==size){
-            m.resize(2*size);
-            size *= 2;
-            }
-            m[currcap] = {k,v};
-            currcap++;
-        }
-        int find(int k){
-            if(k<0 || k>=currcap){
-                return -1;
-            }
-            if(m[k].second==NULL){
-                return -1;
-            }
-            else{
-                return k;
-            }
-        }
-        TreeNode* get(int k){
-            return m[k].second;
-        }
-        void erase(int k){
-            if(k<0 || k>=currcap){
-                return;
-            }
-            m[k].second = NULL;
-        }
-};
+    while(i<command.size() && command[i]==' '){
+        i++;}
+    while(i<command.size() && command[i]!=' '){
+        result[1] += command[i];
+        i++;
+    }
+    while(i<command.size() && command[i]==' '){
+        i++;}
+    while(i<command.size()){
+        result[2] += command[i];
+        i++;
+    }
+    return result;
+}
 
 class string_map{
     int size = 1003;
@@ -146,9 +209,14 @@ class string_map{
             m.resize(size);
         }
         ~string_map(){
-        for (auto node : m) {
-            delete node;   
-        }
+            for (auto node : m) {
+                while (node) {
+                    ListNode* next = node->next;
+                    delete node->f;
+                    delete node;    
+                    node = next;
+                }
+            }
     }
         bool find(string s){
             int h = hash(s);
@@ -178,8 +246,10 @@ class string_map{
             }
             return NULL;
         }
-        void insert(string s, file* f){
+        void insert(string s){
             int h = hash(s);
+            file* f = new file();
+            f->root->message = "Initial version";
             ListNode* newnode = new ListNode(s);
             newnode->f = f;
             if(m[h]==NULL){
@@ -194,47 +264,5 @@ class string_map{
             }
         }
 };
-
-// File Structure
-class file{
-    public:
-    TreeNode* root;
-    int_map version_map;
-    TreeNode* active_version;
-    int total_versions = 0;
-    file(){
-        root = new TreeNode();
-        version_map.insert(0,root);
-        active_version = root;
-        total_versions = 1;
-    }
-    ~file(){
-        delete root;
-    }
-};
-
-// Input Processing
-
-vector<string> process(string command){
-    vector<string> result = {"","",""};
-    int i=0;
-    while(i<command.size() && command[i]!=' '){
-            result[0] += command[i];
-            i++;
-        }
-    while(i<command.size() && command[i]==' '){
-        i++;}
-    while(i<command.size() && command[i]!=' '){
-        result[1] += command[i];
-        i++;
-    }
-    while(i<command.size() && command[i]==' '){
-        i++;}
-    while(i<command.size()){
-        result[2] += command[i];
-        i++;
-    }
-    return result;
-}
 
 #endif
