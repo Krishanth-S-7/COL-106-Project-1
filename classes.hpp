@@ -19,9 +19,30 @@ class TreeNode{
         TreeNode* parent;
         vector<TreeNode*> children;
     public:
-    
+    ~TreeNode(){
+        for(TreeNode* child: children){
+            delete child;
+        }
+    }
 };
 
+
+// List Node
+
+class ListNode{
+    public:
+    string filename;
+    file* f;
+    ListNode* next;
+    ListNode(string s){
+        filename = s;
+        next = NULL;
+    }
+    ~ListNode(){
+        delete f;
+        delete next;
+    }
+};
 //Heap Functions
 
 void heapify(vector<pair<int,TreeNode*>>& v, int n, int i){
@@ -110,6 +131,69 @@ class int_map{
         }
 };
 
+class string_map{
+    int size = 1003;
+    vector<ListNode*> m;
+    int hash(string s){
+        int h = 5381;
+        for(int i=0;i<s.size();i++){
+            h = (h*31 + s[i])%size;
+        }
+        return h;
+    }
+    public:
+        string_map(){
+            m.resize(size);
+        }
+        ~string_map(){
+        for (auto node : m) {
+            delete node;   
+        }
+    }
+        bool find(string s){
+            int h = hash(s);
+            if (m[h]==NULL){
+                return false;
+            }
+            ListNode* temp = m[h];
+            while(temp!=NULL){
+                if(temp->filename==s){
+                    return true;
+                }
+                temp = temp->next;
+            }
+            return false;
+        }
+        file* get(string s){
+            int h = hash(s);
+            if (m[h]==NULL){
+                return NULL;
+            }
+            ListNode* temp = m[h];
+            while(temp!=NULL){
+                if(temp->filename==s){
+                    return temp->f;
+                }
+                temp = temp->next;
+            }
+            return NULL;
+        }
+        void insert(string s, file* f){
+            int h = hash(s);
+            ListNode* newnode = new ListNode(s);
+            newnode->f = f;
+            if(m[h]==NULL){
+                m[h] = newnode;
+            }
+            else{
+                ListNode* temp = m[h];
+                while(temp->next!=NULL){
+                    temp = temp->next;
+                }
+                temp->next = newnode;
+            }
+        }
+};
 
 // File Structure
 class file{
@@ -128,7 +212,8 @@ class file{
         delete root;
     }
 };
-#endif
+
+// Input Processing
 
 vector<string> process(string command){
     vector<string> result = {"","",""};
@@ -151,3 +236,5 @@ vector<string> process(string command){
     }
     return result;
 }
+
+#endif
