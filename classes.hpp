@@ -86,6 +86,7 @@ class file{
     int_map version_map;
     TreeNode* active_version;
     int total_versions = 0;
+    vector<TreeNode*> history;
     file(){
         root = new TreeNode(0,"","",NULL);
         version_map.insert(0,root);
@@ -250,6 +251,8 @@ class string_map{
             int h = hash(s);
             file* f = new file();
             f->root->message = "Initial version";
+            f->root->snapshot_timestamp = time(0);
+            f->history.push_back(f->root);
             ListNode* newnode = new ListNode(s);
             newnode->f = f;
             if(m[h]==NULL){

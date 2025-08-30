@@ -131,7 +131,9 @@ int main(){
             else{
                 f->active_version->message = message;
                 f->active_version->snapshot_timestamp = time(0);
-                cout<<"Snapshot created";
+                vector<TreeNode*>* h = &f->history;
+                h->push_back(f->active_version);
+                cout<<"Snapshot created"<<endl;
             }
             //take snapshot of file
         }
@@ -191,8 +193,16 @@ int main(){
             }
             string filename = inp[1];
 
-            // need to make sure file exists
-            //print history of file
+            if(!files.find(filename)){
+                cout<<"File "<<filename<<" does not exist"<<endl;
+                continue;
+            }
+            file* f = files.get(filename);
+            vector<TreeNode*>* h = &f->history;
+            cout<<"History of file "<<filename<<":"<<endl;
+            for(int i=0;i<h->size();i++){
+                cout<<"Version "<<(*h)[i]->version<<", Timestamp: "<<ctime(&(*h)[i]->snapshot_timestamp)<<", Message: "<<(*h)[i]->message<<endl;
+            }
         }
         else{
             cout<<"Invalid Command"<<endl;
