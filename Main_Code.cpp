@@ -2,7 +2,6 @@
 
 using namespace std;
 
-
 int main(){
     string_map files;
     while(true){
@@ -142,6 +141,12 @@ int main(){
                 cout<<"Enter the file name"<<endl;
                 continue;
             }
+            string filename = inp[1];
+            if(!files.find(filename)){
+                cout<<"File "<<filename<<" does not exist"<<endl;
+                continue;
+            }
+            
             if(inp[2]==""){
                 file* f = files.get(inp[1]);
                 if(f->active_version == f->root){
@@ -152,7 +157,7 @@ int main(){
                 cout<<"File "<<inp[1]<<" rolled back to version "<<f->active_version->version<<endl;
                 continue;
             }
-            string filename = inp[1];
+
             int version;
             if(inp[2][inp[2].size()-1]==' '){
                 cout<<"Version ID Should not have Trailing spaces"<<endl;
@@ -167,10 +172,7 @@ int main(){
             }
             
             // need to make sure file exists
-            if(!files.find(filename)){
-                cout<<"File "<<filename<<" does not exist"<<endl;
-                continue;
-            }
+
             file* f = files.get(filename);
             int_map* vm = &f->version_map;
             if(!vm->find(version)){
