@@ -10,7 +10,7 @@ using namespace std;
 // TreeNode Creation
 
 class TreeNode{
-    public:
+    
         int version;
         string content;
         string message ;
@@ -18,7 +18,7 @@ class TreeNode{
         time_t snapshot_timestamp;
         TreeNode* parent;
         vector<TreeNode*> children;
-
+    public:
     TreeNode(int v , string c, string m, TreeNode* p = NULL){
         version = v;
         content = c;
@@ -26,6 +26,33 @@ class TreeNode{
         parent = p;
         created_timestamp = time(0);
         snapshot_timestamp = 0;
+    }
+    TreeNode* get_parent(){
+        return parent;
+    }
+    time_t get_snap(){
+        return snapshot_timestamp;
+    }
+    int get_version(){
+        return version;
+    }
+    void add_child(TreeNode* child){
+        children.push_back(child);
+    }
+    string get_message(){
+        return message;
+    }
+    void set_content(string c){
+        content = c;
+    }
+    string get_content(){
+        return content;
+    }
+    void set_message(string m){
+        message = m;
+    }
+    void set_timestamp(time_t t){
+        snapshot_timestamp = t;
     }
     ~TreeNode(){
         for(TreeNode* child: children){
@@ -81,27 +108,46 @@ class int_map{
 // File Structure
 
 class file{
-    public:
+
     TreeNode* root;
     int_map version_map;
     TreeNode* active_version;
     int total_versions = 0;
     vector<TreeNode*> history;
+    public:
     file(){
         root = new TreeNode(0,"","",NULL);
         version_map.insert(0,root);
         active_version = root;
         total_versions = 1;
     }
+    TreeNode* active(){
+        return active_version;
+    }
+    TreeNode* get_root(){
+        return root;
+    }
+    vector<TreeNode*>* get_history(){
+        return &history;
+    }
     ~file(){
         delete root;
     }
+    int_map* get_version_map(){
+        return &version_map;
+    }
     void insert_version(string message){
         TreeNode* newnode = new TreeNode(total_versions,message,"",active_version);
-        active_version->children.push_back(newnode);
+        active_version->add_child(newnode);
         version_map.insert(total_versions,newnode);
         active_version = newnode;
         total_versions++;
+    }
+    void push_history(TreeNode* x){
+        history.push_back(x);
+    }
+    void set_active(TreeNode* x){
+        active_version = x;
     }
 };
 
@@ -109,13 +155,29 @@ class file{
 // List Node
 
 class ListNode{
-    public:
+    
     string filename;
     file* f;
     ListNode* next;
+    public:
     ListNode(string s){
         filename = s;
         next = NULL;
+    }
+    ListNode* get_next(){
+        return next;
+    }
+    file* get_file(){
+        return f;
+    }
+    void set_file(file* fileptr){
+        f = fileptr;
+    }
+    string get_filename(){
+        return filename;
+    }
+    void set_next(ListNode* n){
+        next = n;
     }
     ~ListNode(){
     }
@@ -212,8 +274,8 @@ class string_map{
         ~string_map(){
             for (auto node : m) {
                 while (node) {
-                    ListNode* next = node->next;
-                    delete node->f;
+                    ListNode* next = node->get_next();
+                    delete node->get_file();
                     delete node;    
                     node = next;
                 }
@@ -226,10 +288,10 @@ class string_map{
             }
             ListNode* temp = m[h];
             while(temp!=NULL){
-                if(temp->filename==s){
+                if(temp->get_filename()==s){
                     return true;
                 }
-                temp = temp->next;
+                temp = temp->get_next();
             }
             return false;
         }
@@ -240,30 +302,30 @@ class string_map{
             }
             ListNode* temp = m[h];
             while(temp!=NULL){
-                if(temp->filename==s){
-                    return temp->f;
+                if(temp->get_filename()==s){
+                    return temp->get_file();
                 }
-                temp = temp->next;
+                temp = temp->get_next();
             }
             return NULL;
         }
         void insert(string s){
             int h = hash(s);
             file* f = new file();
-            f->root->message = "Initial version";
-            f->root->snapshot_timestamp = time(0);
-            f->history.push_back(f->root);
+            f->get_root()->set_message("Initial version");
+            f->get_root()->set_timestamp(time(0));
+            f->push_history(f->get_root());
             ListNode* newnode = new ListNode(s);
-            newnode->f = f;
+            newnode->set_file(f);
             if(m[h]==NULL){
                 m[h] = newnode;
             }
             else{
                 ListNode* temp = m[h];
-                while(temp->next!=NULL){
-                    temp = temp->next;
+                while(temp->get_next()!=NULL){
+                    temp = temp->get_next();
                 }
-                temp->next = newnode;
+                temp->set_next(newnode);
             }
         }
 };

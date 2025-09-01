@@ -49,7 +49,7 @@ int main(){
             }
             //read file from map
             file* f = files.get(filename);
-            cout<<"File "<<filename<<" content: "<<f->active_version->content<<endl;
+            cout<<"File "<<filename<<" content: "<<f->active()->get_content()<<endl;
 
             
         }
@@ -71,9 +71,9 @@ int main(){
                 continue;
             }
             file* f = files.get(filename);
-            string k =f->active_version->content + content;
-            if(f->active_version->message==""){
-                f->active_version->content = k;
+            string k =f->active()->get_content() + content;
+            if(f->active()->get_message()==""){
+                f->active()->set_content(k);
             }
             else{
                 f->insert_version(k);
@@ -98,8 +98,8 @@ int main(){
                 continue;
             }
             file* f = files.get(filename);
-            if(f->active_version->message==""){
-                f->active_version->content = content;
+            if(f->active()->get_message()==""){
+                f->active()->set_content(content);
             }
             else{
                 f->insert_version(content);
@@ -123,15 +123,16 @@ int main(){
                 continue;
             }
             file* f = files.get(filename);
-            if(f->active_version->message!=""){
+            if(f->active()->get_message()!=""){
                 cout<<"Current version is already snapshotted."<<endl;
                 continue;
             }
             else{
-                f->active_version->message = message;
-                f->active_version->snapshot_timestamp = time(0);
-                vector<TreeNode*>* h = &f->history;
-                h->push_back(f->active_version);
+                f->active()->set_message(message);
+                f->active()->set_timestamp(time(0));
+                // vector<TreeNode*>* h = &f->history;
+                // h->push_back(f->active_version);
+                f->push_history(f->active());
                 cout<<"Snapshot created"<<endl;
             }
             //take snapshot of file
@@ -149,12 +150,12 @@ int main(){
             
             if(inp[2]==""){
                 file* f = files.get(inp[1]);
-                if(f->active_version == f->root){
+                if(f->active() == f->get_root()){
                     cout<<"Already at root version"<<endl;
                     continue;
                 }
-                f->active_version = f->active_version->parent;
-                cout<<"File "<<inp[1]<<" rolled back to version "<<f->active_version->version<<endl;
+                f->set_active(f->active()->get_parent());
+                cout<<"File "<<inp[1]<<" rolled back to version "<<f->active()->get_version()<<endl;
                 continue;
             }
 
@@ -174,13 +175,13 @@ int main(){
             // need to make sure file exists
 
             file* f = files.get(filename);
-            int_map* vm = &f->version_map;
+            int_map* vm = f->get_version_map();
             if(!vm->find(version)){
                 cout<<"Version "<<version<<" does not exist for file "<<filename<<endl;
                 continue;
             }
             TreeNode* v = vm->get(version);
-            f->active_version = v;
+            f->set_active(v);
             cout<<"File "<<filename<<" rolled back to version "<<version<<endl;
             //rollback to version
         }
@@ -200,10 +201,11 @@ int main(){
                 continue;
             }
             file* f = files.get(filename);
-            vector<TreeNode*>* h = &f->history;
+            vector<TreeNode*>* h = f->get_history();
             cout<<"History of file "<<filename<<":"<<endl;
             for(int i=0;i<h->size();i++){
-                cout<<"Version "<<(*h)[i]->version<<", Timestamp: "<<ctime(&(*h)[i]->snapshot_timestamp)<<", Message: "<<(*h)[i]->message<<endl;
+                time_t snap_time = (*h)[i]->get_snap();
+                cout<<"Version "<<(*h)[i]->get_version()<<", Timestamp: "<<ctime(&snap_time)<<", Message: "<<(*h)[i]->get_message()<<endl;
             }
         }
         else{
