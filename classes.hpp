@@ -113,6 +113,7 @@ class file{
     int_map version_map;
     TreeNode* active_version;
     int total_versions = 0;
+    time_t last_modified;
     // vector<TreeNode*> history;
     public:
     file(){
@@ -120,6 +121,13 @@ class file{
         version_map.insert(0,root);
         active_version = root;
         total_versions = 1;
+        last_modified = time(0);
+    }
+    time_t get_last_modified(){
+        return last_modified;
+    }
+    void set_last_modified(time_t t){
+        last_modified = t;
     }
     TreeNode* active(){
         return active_version;
@@ -192,18 +200,20 @@ class ListNode{
     ~ListNode(){
     }
 };
+
 //Heap Functions
 
-void heapify(vector<pair<int,TreeNode*>>& v, int n, int i){
+template<typename T>
+void heapify(vector<pair<T,string>>& v, int n, int i){
     int pos = i;
     int left = 2*i + 1;
     int right = 2*i + 2;
     while(right<=n){
-        if(v[pos].first < min(v[left].first,v[right].first)){
+        if(v[pos].first > max(v[left].first,v[right].first)){
             break;
         }
         else{
-            if(v[left].first < v[right].first){
+            if(v[left].first > v[right].first){
                 swap(v[pos],v[left]);
                 pos = left;
             }
@@ -215,26 +225,30 @@ void heapify(vector<pair<int,TreeNode*>>& v, int n, int i){
         left = 2*pos + 1;
         right = 2*pos + 2;
     }
-    if(left==n && v[pos].first > v[left].first){
+    if(left==n && v[pos].first < v[left].first){
         swap(v[pos],v[left]);
     }
 }
 
-void buildheap(vector<pair<int, TreeNode*>>& v, int n, int i) {
-    for (int j = (n - 1) / 2; j >= i; j--) {
-        heapify(v, n, j);
+template<typename T>
+void buildheap(vector<pair<T,string>>& v, int n, int i) {
+    for (int j = n; j >= i; j--) {
+        heapify<T>(v, n, j);
     }
 }
 
-
-void heapsort(vector<pair<int, TreeNode*>>& v) {
+template<typename T>
+void heapsort(vector<pair<T,string>>& v, int k) {
     int n = v.size();
-    buildheap(v, n - 1, 0);
-    for (int i = n - 1; i > 0; i--) {
+    buildheap<T>(v, n - 1, 0);
+
+    for (int i = n - 1; i >= n - k; i--) {
         swap(v[0], v[i]);
-        heapify(v, i - 1, 0);
+        heapify<T>(v, i - 1, 0);
     }
 }
+
+
 
 
 

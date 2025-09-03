@@ -4,6 +4,7 @@ using namespace std;
 
 int main(){
     string_map files;
+    vector<string> all_files;
     while(true){
         string command;
         getline(cin,command);
@@ -28,6 +29,7 @@ int main(){
             }
 
             files.insert(filename);
+            all_files.push_back(filename);
             cout<<"File "<<filename<<" created"<<endl;
         }
         else if(inp[0]=="READ"){
@@ -71,6 +73,7 @@ int main(){
                 continue;
             }
             file* f = files.get(filename);
+            f->set_last_modified(time(0));
             string k =f->active()->get_content() + content;
             if(f->active()->get_message()==""){
                 f->active()->set_content(k);
@@ -98,6 +101,7 @@ int main(){
                 continue;
             }
             file* f = files.get(filename);
+            f->set_last_modified(time(0));
             if(f->active()->get_message()==""){
                 f->active()->set_content(content);
             }
@@ -205,6 +209,46 @@ int main(){
                 string dt = ctime(&snap_time);
                 dt.pop_back();
                 cout<<"Version "<<h[i]->get_version()<<", Timestamp: "<<dt<<", Message: "<<h[i]->get_message()<<endl;
+            }
+        }
+        else if(inp[0]=="RECENT_FILES"){
+            if(inp[1]==""){
+                cout<<"Enter the number of files"<<endl;
+                continue;
+            }
+            if(inp[2]!=""){
+                cout<<"Number of files should be a single integer"<<endl;
+                continue;
+            }
+            int n;
+            try{
+                n = stoi(inp[1]);
+            }
+            catch(...){
+                cout<<"Invalid number of files"<<endl;
+                continue;
+            }
+            if(n<=0){
+                cout<<"Number of files should be positive"<<endl;
+                continue;
+            }
+            // cout << all_files.size() << endl;
+            if(n>all_files.size()){
+                cout<<"There are only "<<all_files.size()<<" files"<<endl;
+                continue;
+            }
+            vector<pair<time_t,string>> recent;
+            for(auto f: all_files){
+                recent.push_back({files.get(f)->get_last_modified(),f});
+            }
+            heapsort<time_t>(recent,n);
+            cout<<"Most recent "<<n<<" files:"<<endl;
+
+            for(int i=(int)recent.size()-1;i>=(int)recent.size()-n;i--){
+                time_t t = recent[i].first;
+                string dt = ctime(&t);
+                dt.pop_back();
+                cout<<recent[i].second<<", Last Modified: "<<dt<<endl;
             }
         }
         else{
