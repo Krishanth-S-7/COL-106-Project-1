@@ -60,18 +60,21 @@ int main(){
                 cout<<"Enter the file name"<<endl;
                 continue;
             }
+            string filename = inp[1];
+            if (!files.find(filename))
+            {
+                cout << "File " << filename << " does not exist" << endl;
+                continue;
+            }
             if(inp[2]==""){
                 cout<<"Enter the content to be inserted"<<endl;
                 continue;
             }
 
             string content = inp[2];
-            string filename = inp[1];
+
             // need to make sure file exists
-            if(!files.find(filename)){
-                cout<<"File "<<filename<<" does not exist"<<endl;
-                continue;
-            }
+            
             file* f = files.get(filename);
             f->set_last_modified(time(0));
             string k =f->active()->get_content() + content;
@@ -89,17 +92,20 @@ int main(){
                 cout<<"Enter the file name"<<endl;
                 continue;
             }
+            string filename = inp[1];
+            if (!files.find(filename))
+            {
+                cout << "File " << filename << " does not exist" << endl;
+                continue;
+            }
             if(inp[2]==""){
                 cout<<"Enter the content to be updated"<<endl;
                 continue;
             }
             string content = inp[2];
-            string filename = inp[1];
+
             // need to make sure file exists
-            if(!files.find(filename)){
-                cout<<"File "<<filename<<" does not exist"<<endl;
-                continue;
-            }
+
             file* f = files.get(filename);
             f->set_last_modified(time(0));
             if(f->active()->get_message()==""){
@@ -115,17 +121,21 @@ int main(){
                 cout<<"Enter the file name"<<endl;
                 continue;
             }
+            
+            string filename = inp[1];
+            if (!files.find(filename))
+            {
+                cout << "File " << filename << " does not exist" << endl;
+                continue;
+            }
             if(inp[2]==""){
                 cout<<"Enter Snapshot message"<<endl;
                 continue;
             }
-            string filename = inp[1];
+
             string message = inp[2];
             // need to make sure file exists
-            if(!files.find(filename)){
-                cout<<"File "<<filename<<" does not exist"<<endl;
-                continue;
-            }
+
             file* f = files.get(filename);
             if(f->active()->get_message()!=""){
                 cout<<"Current version is already snapshotted."<<endl;
@@ -218,6 +228,10 @@ int main(){
             }
             if(inp[2]!=""){
                 cout<<"Number of files should be a single integer"<<endl;
+                continue;
+            }
+            if(inp[1][inp[1].size()-1]==' '){
+                cout<<"Number of files should not have trailing spaces"<<endl;
                 continue;
             }
             int n;
