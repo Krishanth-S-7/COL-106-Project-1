@@ -8,7 +8,7 @@ int main(){
     while(true){
         string command;
         getline(cin,command);
-        if(command=="exit") break;
+        if(command=="EXIT") break;
         if(command.size()==0) continue;
         vector<string> inp = process(command);
         if(inp[0]=="") continue;
@@ -248,7 +248,43 @@ int main(){
                 time_t t = recent[i].first;
                 string dt = ctime(&t);
                 dt.pop_back();
-                cout<<recent[i].second<<", Last Modified: "<<dt<<endl;
+                cout<<"File Name : "<<recent[i].second<<", Last Modified: "<<dt<<endl;
+            }
+        }
+        else if(inp[0]=="BIGGEST_TREES"){
+            if(inp[1]==""){
+                cout<<"Enter the number of files"<<endl;
+                continue;
+            }
+            if(inp[2]!=""){
+                cout<<"Number of files should be a single integer"<<endl;
+                continue;
+            }
+            int n;
+            try{
+                n = stoi(inp[1]);
+            }
+            catch(...){
+                cout<<"Invalid number of files"<<endl;
+                continue;
+            }
+            if(n<=0){
+                cout<<"Number of files should be positive"<<endl;
+                continue;
+            }
+            if(n>all_files.size()){
+                cout<<"There are only "<<all_files.size()<<" files"<<endl;
+                continue;
+            }
+            vector<pair<int,string>> biggest;
+            for(auto f: all_files){
+                biggest.push_back({files.get(f)->get_total_versions(),f});
+            }
+            heapsort<int>(biggest,n);
+            cout<<"Files with biggest trees:"<<endl;
+
+            for(int i=(int)biggest.size()-1;i>=(int)biggest.size()-n;i--){
+                cout<<"File Name : "<<biggest[i].second<<", Size: "<<biggest[i].first<<endl;
             }
         }
         else{

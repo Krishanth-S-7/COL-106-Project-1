@@ -126,6 +126,9 @@ class file{
     time_t get_last_modified(){
         return last_modified;
     }
+    int get_total_versions(){
+        return total_versions;
+    }
     void set_last_modified(time_t t){
         last_modified = t;
     }
