@@ -113,7 +113,7 @@ class file{
     int_map version_map;
     TreeNode* active_version;
     int total_versions = 0;
-    vector<TreeNode*> history;
+    // vector<TreeNode*> history;
     public:
     file(){
         root = new TreeNode(0,"","",NULL);
@@ -127,9 +127,7 @@ class file{
     TreeNode* get_root(){
         return root;
     }
-    vector<TreeNode*>* get_history(){
-        return &history;
-    }
+
     ~file(){
         delete root;
     }
@@ -143,11 +141,23 @@ class file{
         active_version = newnode;
         total_versions++;
     }
-    void push_history(TreeNode* x){
-        history.push_back(x);
-    }
+
     void set_active(TreeNode* x){
         active_version = x;
+    }
+    vector<TreeNode*> history(){
+        vector<TreeNode*> h;
+        if(active_version->get_message()!=""){
+            h.push_back(active_version);
+        }
+        TreeNode* temp = active_version->get_parent();
+        while(temp!=NULL){
+            if(temp->get_message()!=""){
+                h.push_back(temp);
+            }
+            temp = temp->get_parent();
+        }
+        return h;
     }
 };
 
@@ -314,7 +324,7 @@ class string_map{
             file* f = new file();
             f->get_root()->set_message("Initial version");
             f->get_root()->set_timestamp(time(0));
-            f->push_history(f->get_root());
+            // f->push_history(f->get_root());
             ListNode* newnode = new ListNode(s);
             newnode->set_file(f);
             if(m[h]==NULL){

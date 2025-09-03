@@ -130,9 +130,6 @@ int main(){
             else{
                 f->active()->set_message(message);
                 f->active()->set_timestamp(time(0));
-                // vector<TreeNode*>* h = &f->history;
-                // h->push_back(f->active_version);
-                f->push_history(f->active());
                 cout<<"Snapshot created"<<endl;
             }
             //take snapshot of file
@@ -201,11 +198,13 @@ int main(){
                 continue;
             }
             file* f = files.get(filename);
-            vector<TreeNode*>* h = f->get_history();
             cout<<"History of file "<<filename<<":"<<endl;
-            for(int i=0;i<h->size();i++){
-                time_t snap_time = (*h)[i]->get_snap();
-                cout<<"Version "<<(*h)[i]->get_version()<<", Timestamp: "<<ctime(&snap_time)<<", Message: "<<(*h)[i]->get_message()<<endl;
+            vector<TreeNode*> h = f->history();
+            for(int i = h.size()-1;i>=0;i--){
+                time_t snap_time = h[i]->get_snap();
+                string dt = ctime(&snap_time);
+                dt.pop_back();
+                cout<<"Version "<<h[i]->get_version()<<", Timestamp: "<<dt<<", Message: "<<h[i]->get_message()<<endl;
             }
         }
         else{
