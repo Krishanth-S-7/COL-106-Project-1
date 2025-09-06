@@ -207,29 +207,35 @@ class ListNode{
 //Heap Functions
 
 template<typename T>
+bool greater( pair<T,string> &a, pair<T,string> &b){
+    if(a.first != b.first){
+        return a.first > b.first;
+    }
+    else{
+        return a.second < b.second;
+    }
+}
+
+template<typename T>
 void heapify(vector<pair<T,string>>& v, int n, int i){
     int pos = i;
-    int left = 2*i + 1;
-    int right = 2*i + 2;
-    while(right<=n){
-        if(v[pos].first > max(v[left].first,v[right].first)){
-            break;
+    while(true){
+        int left = 2*pos + 1;
+        int right = 2*pos + 2;
+        int largest = pos;
+        if(left <= n && greater(v[left], v[largest])){
+            largest = left;
+        }
+        if(right <= n && greater(v[right], v[largest])){
+            largest = right;
+        }
+        if(largest != pos){
+            swap(v[pos], v[largest]);
+            pos = largest;
         }
         else{
-            if(v[left].first > v[right].first){
-                swap(v[pos],v[left]);
-                pos = left;
-            }
-            else{
-                swap(v[pos],v[right]);
-                pos = right;
-            }
+            break;
         }
-        left = 2*pos + 1;
-        right = 2*pos + 2;
-    }
-    if(left==n && v[pos].first < v[left].first){
-        swap(v[pos],v[left]);
     }
 }
 
