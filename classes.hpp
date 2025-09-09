@@ -271,19 +271,19 @@ void heapsort(vector<pair<T,string>>& v, int k) {
 vector<string> process(string command){
     vector<string> result = {"","",""};
     int i=0;
-    while(i<command.size() && command[i]!=' '){
+    while(i<(int)command.size() && command[i]!=' '){
             result[0] += command[i];
             i++;
         }
-    while(i<command.size() && command[i]==' '){
+    while(i<(int)command.size() && command[i]==' '){
         i++;}
-    while(i<command.size() && command[i]!=' '){
+    while(i<(int)command.size() && command[i]!=' '){
         result[1] += command[i];
         i++;
     }
-    while(i<command.size() && command[i]==' '){
+    while(i<(int)command.size() && command[i]==' '){
         i++;}
-    while(i<command.size()){
+    while(i<(int)command.size()){
         result[2] += command[i];
         i++;
     }
@@ -295,7 +295,7 @@ class string_map{
     vector<ListNode*> m;
     int hash(string s){
         int h = 5381;
-        for(int i=0;i<s.size();i++){
+        for(int i=0;i<(int)s.size();i++){
             h = (h*31 + s[i])%size;
         }
         return h;

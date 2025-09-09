@@ -1,5 +1,5 @@
 #include "classes.hpp"
-
+// #include <string>
 using namespace std;
 
 int main(){
@@ -247,7 +247,7 @@ int main(){
                 continue;
             }
             // cout << all_files.size() << endl;
-            if(n>all_files.size()){
+            if(n>(int)all_files.size()){
                 cout<<"There are only "<<all_files.size()<<" files"<<endl;
                 continue;
             }
@@ -286,7 +286,7 @@ int main(){
                 cout<<"Number of files should be positive"<<endl;
                 continue;
             }
-            if(n>all_files.size()){
+            if(n>(int)all_files.size()){
                 cout<<"There are only "<<all_files.size()<<" files"<<endl;
                 continue;
             }
