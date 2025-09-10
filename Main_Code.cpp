@@ -98,10 +98,10 @@ int main(){
                 cout << "File " << filename << " does not exist" << endl;
                 continue;
             }
-            if(inp[2]==""){
-                cout<<"Enter the content to be updated"<<endl;
-                continue;
-            }
+            // if(inp[2]==""){
+            //     cout<<"Enter the content to be updated"<<endl;
+            //     continue;
+            // }
             string content = inp[2];
 
             // need to make sure file exists
@@ -175,6 +175,10 @@ int main(){
                 cout<<"Version ID Should not have Trailing spaces"<<endl;
                 continue;
             }
+            if(inp[2][0]==' '){
+                cout<<"Version ID should not have leading spaces"<<endl;
+                continue;
+            }
             try{
                 version = stoi(inp[2]);
             }
@@ -232,6 +236,10 @@ int main(){
             }
             if(inp[1][inp[1].size()-1]==' '){
                 cout<<"Number of files should not have trailing spaces"<<endl;
+                continue;
+            }
+            if(inp[1][0]==' '){
+                cout<<"Number of files should not have leading spaces"<<endl;
                 continue;
             }
             int n;

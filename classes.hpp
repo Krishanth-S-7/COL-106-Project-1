@@ -281,8 +281,7 @@ vector<string> process(string command){
         result[1] += command[i];
         i++;
     }
-    while(i<(int)command.size() && command[i]==' '){
-        i++;}
+    i++;
     while(i<(int)command.size()){
         result[2] += command[i];
         i++;
