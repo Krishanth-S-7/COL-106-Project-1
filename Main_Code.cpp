@@ -5,7 +5,11 @@ using namespace std;
 int main(){
     string_map files;
     vector<string> all_files;
+    int v = 0;
+    time_t last = time(0);
     while(true){
+
+        cout << "> ";
         string command;
         getline(cin,command);
         if(command=="EXIT") break;
@@ -13,6 +17,15 @@ int main(){
         vector<string> inp = process(command);
         if(inp[0]=="") continue;
         if(inp[0]=="CREATE"){
+            if (last == time(0))
+            {
+                v++;
+            }
+            else
+            {
+                last = time(0);
+                v = 0;
+            }
             if(inp[1]==""){
                 cout<<"Enter the file name"<<endl;
                 continue;
@@ -22,13 +35,12 @@ int main(){
                 continue;
             }
             string filename = inp[1];
-            // need to make sure file doesn't already exist
             if(files.find(filename)){
                 cout<<"File "<<filename<<" already exists"<<endl;
                 continue;
             }
 
-            files.insert(filename);
+            files.insert(filename,v);
             all_files.push_back(filename);
             cout<<"File "<<filename<<" created"<<endl;
         }
@@ -42,8 +54,6 @@ int main(){
                 continue;
             }
 
-            // need to make sure file exists
-
             string filename = inp[1];
             if(!files.find(filename)){
                 cout<<"File "<<filename<<" does not exist"<<endl;
@@ -56,6 +66,15 @@ int main(){
             
         }
         else if(inp[0]=="INSERT"){
+            if (last == time(0))
+            {
+                v++;
+            }
+            else
+            {
+                last = time(0);
+                v = 0;
+            }
             if(inp[1]==""){
                 cout<<"Enter the file name"<<endl;
                 continue;
@@ -73,10 +92,8 @@ int main(){
 
             string content = inp[2];
 
-            // need to make sure file exists
-            
             file* f = files.get(filename);
-            f->set_last_modified(time(0));
+            f->set_last_modified(time(0)*1000+v);
             string k =f->active()->get_content() + content;
             if(f->active()->get_message()==""){
                 f->active()->set_content(k);
@@ -85,9 +102,18 @@ int main(){
                 f->insert_version(k);
             }
             cout<<"Content inserted into file "<<filename<<endl;
-            //insert content into file
+
         }
         else if(inp[0]=="UPDATE"){
+            if (last == time(0))
+            {
+                v++;
+            }
+            else
+            {
+                last = time(0);
+                v = 0;
+            }
             if(inp[1]==""){
                 cout<<"Enter the file name"<<endl;
                 continue;
@@ -98,16 +124,13 @@ int main(){
                 cout << "File " << filename << " does not exist" << endl;
                 continue;
             }
-            // if(inp[2]==""){
-            //     cout<<"Enter the content to be updated"<<endl;
-            //     continue;
-            // }
+
             string content = inp[2];
 
-            // need to make sure file exists
+
 
             file* f = files.get(filename);
-            f->set_last_modified(time(0));
+            f->set_last_modified(time(0)*1000+v);
             if(f->active()->get_message()==""){
                 f->active()->set_content(content);
             }
@@ -134,7 +157,6 @@ int main(){
             }
 
             string message = inp[2];
-            // need to make sure file exists
 
             file* f = files.get(filename);
             if(f->active()->get_message()!=""){
@@ -254,7 +276,7 @@ int main(){
                 cout<<"Number of files should be positive"<<endl;
                 continue;
             }
-            // cout << all_files.size() << endl;
+
             if(n>(int)all_files.size()){
                 cout<<"There are only "<<all_files.size()<<" files"<<endl;
                 continue;
@@ -268,6 +290,7 @@ int main(){
 
             for(int i=(int)recent.size()-1;i>=(int)recent.size()-n;i--){
                 time_t t = recent[i].first;
+                t = t/1000;
                 string dt = ctime(&t);
                 dt.pop_back();
                 cout<<"File Name : "<<recent[i].second<<", Last Modified: "<<dt<<endl;

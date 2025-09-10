@@ -116,12 +116,12 @@ class file{
     time_t last_modified;
     // vector<TreeNode*> history;
     public:
-    file(){
+    file(int k){
         root = new TreeNode(0,"","",NULL);
         version_map.insert(0,root);
         active_version = root;
         total_versions = 1;
-        last_modified = time(0);
+        last_modified = time(0)*1000+k;
     }
     time_t get_last_modified(){
         return last_modified;
@@ -281,7 +281,6 @@ vector<string> process(string command){
         result[1] += command[i];
         i++;
     }
-    i++;
     while(i<(int)command.size()){
         result[2] += command[i];
         i++;
@@ -341,9 +340,9 @@ class string_map{
             }
             return NULL;
         }
-        void insert(string s){
+        void insert(string s,int k){
             int h = hash(s);
-            file* f = new file();
+            file* f = new file(k);
             f->get_root()->set_message("Initial version");
             f->get_root()->set_timestamp(time(0));
             // f->push_history(f->get_root());
