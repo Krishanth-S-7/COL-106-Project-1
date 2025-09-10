@@ -3,16 +3,16 @@
 COL106: Data Structures and Algorithms -- Assignment 1\
 :::
 
-# Overview {#overview .unnumbered}
+# Overview
 
 This project implements a **simplified, in-memory version control
 system**, inspired by Git, using core data structures such as **Trees**,
 **HashMaps**, and **Heaps**. The system manages versioned files with
 support for branching and historical inspection.
 
-# Features {#features .unnumbered}
+# Features 
 
-## Core Features {#core-features .unnumbered}
+## Core Features 
 
 -   **CREATE**: Create a new file with an initial snapshot.
 
@@ -31,28 +31,28 @@ support for branching and historical inspection.
 
 -   **EXIT**: Terminates the program.
 
-## System-wide Operations {#system-wide-operations .unnumbered}
+## System-wide Operations 
 
 -   **RECENT FILES**: Print files sorted by last modification time.
 
 -   **BIGGEST TREES**: Print files with the highest version count.
 
-# How to Run {#how-to-run .unnumbered}
+# How to Run
 
-## Requirements {#requirements .unnumbered}
+## Requirements 
 
 A C++ compiler such as `g++`.
 
-## Compilation and Execution {#compilation-and-execution .unnumbered}
+## Compilation and Execution 
 
 Use the provided `run.sh` script:
 
     chmod +x run.sh
     ./run.sh
 
-# Command Syntax {#command-syntax .unnumbered}
+# Command Syntax 
 
-## Core Operations {#core-operations .unnumbered}
+## Core Operations 
 
 ``` {.bash language="bash"}
 CREATE <filename>
@@ -64,14 +64,14 @@ ROLLBACK <filename> [versionID]
 HISTORY <filename>
 ```
 
-## System Analytics {#system-analytics .unnumbered}
+## System Analytics 
 
 ``` {.bash language="bash"}
 RECENT_FILES [num]
 BIGGEST_TREES [num]
 ```
 
-# CONSTRAINTS {#constraints .unnumbered}
+# CONSTRAINTS 
 
 the following are the constraints that i have to implement to the
 problem statement effectively.
@@ -98,9 +98,9 @@ problem statement effectively.
 -   Added last_modified attribute to files to make it easier for sorting
     it for recent_files. one could not find another elegant method
 
-# ERROR HANDLING {#error-handling .unnumbered}
+# ERROR HANDLING 
 
-## CREATE {#create .unnumbered}
+## CREATE 
 
 -   Made sure the file name contains only one word. as it may create
     confusion while updating.
@@ -108,12 +108,12 @@ problem statement effectively.
 -   made sure the file name is unique. Displayed a message when it is
     already present.
 
-## READ {#read .unnumbered}
+## READ 
 
 -   Made sure that given file name exist. Displayed a message if it is
     not present
 
-## INSERT {#insert .unnumbered}
+## INSERT 
 
 -   Made sure the given file name exist. Displayed a message if it is
     not present
@@ -123,7 +123,7 @@ problem statement effectively.
 
 -   Created new version if the active version is snapshotted.
 
-## UPDATE {#update .unnumbered}
+## UPDATE 
 
 -   Made sure the given file name exist. Displayed a message if it is
     not present
@@ -133,7 +133,7 @@ problem statement effectively.
 
 -   Created new version if the active version is snapshotted.
 
-## SNAPSHOT {#snapshot .unnumbered}
+## SNAPSHOT 
 
 -   Made sure the given file name exist. Displayed a message if it is
     not present
@@ -144,7 +144,7 @@ problem statement effectively.
 -   checked whether the active version is already snapshotted. Displayed
     a message when already snapshotted.
 
-## ROLLBACK {#rollback .unnumbered}
+## ROLLBACK 
 
 -   Made sure the file name exist.
 
@@ -157,12 +157,12 @@ problem statement effectively.
 -   Made sure they gave a number and the given number is a version.
     Displayed a message if it is not.
 
-## UPDATE {#update-1 .unnumbered}
+## UPDATE 
 
 -   Made sure the given file name exist. Displayed a message if it is
     not present.
 
-## RECENT_FILES {#recent_files .unnumbered}
+## RECENT_FILES 
 
 -   Made sure the given file name exist. Displayed a message if it is
     not present
@@ -173,7 +173,7 @@ problem statement effectively.
 -   Made sure they given number of files exist. if the given number is
     more than the number of files exist, displayed an error.
 
-## BIGGEST_TREES {#biggest_trees .unnumbered}
+## BIGGEST_TREES 
 
 -   Made sure the given file name exist. Displayed a message if it is
     not present
