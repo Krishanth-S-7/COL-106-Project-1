@@ -282,6 +282,14 @@ int main(){
                 cout<<"Number of files should be a single integer"<<endl;
                 continue;
             }
+            if(inp[1][inp[1].size()-1]==' '){
+                cout<<"Number of files should not have trailing spaces"<<endl;
+                continue;
+            }
+            if(inp[1][0]==' '){
+                cout<<"Number of files should not have leading spaces"<<endl;
+                continue;
+            }
             int n;
             try{
                 n = stoi(inp[1]);
