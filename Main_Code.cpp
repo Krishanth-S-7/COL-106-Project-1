@@ -17,6 +17,9 @@ int main(){
         vector<string> inp = process(command);
         if(inp[0]=="") continue;
         if(inp[0]=="CREATE"){
+            while(v==1000 && last==time(0)){
+                continue;
+            }
             if (last == time(0))
             {
                 v++;
@@ -66,6 +69,10 @@ int main(){
             
         }
         else if(inp[0]=="INSERT"){
+            while (v == 1000 && last == time(0))
+            {
+                continue;
+            }
             if (last == time(0))
             {
                 v++;
@@ -105,6 +112,10 @@ int main(){
 
         }
         else if(inp[0]=="UPDATE"){
+            while (v == 1000 && last == time(0))
+            {
+                continue;
+            }
             if (last == time(0))
             {
                 v++;

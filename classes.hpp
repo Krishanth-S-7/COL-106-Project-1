@@ -352,11 +352,8 @@ class string_map{
                 m[h] = newnode;
             }
             else{
-                ListNode* temp = m[h];
-                while(temp->get_next()!=NULL){
-                    temp = temp->get_next();
-                }
-                temp->set_next(newnode);
+                newnode->set_next(m[h]);
+                m[h] = newnode;
             }
         }
 };
